@@ -4,10 +4,10 @@ import pickle
 
 app = Flask(__name__)
 
-# Load ML assets right when the backend server launches
-with open('models/churn_model.pkl', 'rb') as f:
+# Fixed: Loading files directly from the main folder (no models/ prefix)
+with open('churn_model.pkl', 'rb') as f:
     model = pickle.load(f)
-with open('models/scaler.pkl', 'rb') as f:
+with open('scaler.pkl', 'rb') as f:
     scaler = pickle.load(f)
 
 @app.route('/predict', methods=['POST'])
