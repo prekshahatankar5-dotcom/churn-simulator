@@ -65,7 +65,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # 3. Structural Grid Columns
-col1, col2 = st.columns([4, 5], gap="large")
+col1, col2 = st.columns(2, gap="large")
 
 with col1:
     st.markdown('<div class="card-box"><div class="section-title">📋 Active Customer Profile</div>', unsafe_allow_html=True)
@@ -93,8 +93,11 @@ with col2:
     }
     
     try:
-        # Querying local active Flask backend
-        response = requests.post("http://localhost:5000/predict", json=payload)
+        # NOTE: When your Render backend goes green, replace this URL with your Render link!
+        # Example: "https://onrender.com"
+        BACKEND_URL = "http://localhost:5000/predict"
+        
+        response = requests.post(BACKEND_URL, json=payload)
         
         if response.status_code == 200:
             res = response.json()
@@ -103,7 +106,6 @@ with col2:
             
             # Map dynamic styles depending on severity
             color_class = "risk-high" if risk == "High" else "risk-medium" if risk == "Medium" else "risk-low"
-            badge_label = " CRITICAL RISK ALERT" if risk == "High" else " MODERATE WARNING" if risk == "Low" else " SECURE CUSTOMER STATUS"
             
             # Custom styled visualization scorecard
             st.markdown(f"""
@@ -116,18 +118,17 @@ with col2:
             
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
             
-            # Preserving actionable retention playbooks
             if risk == "High":
-                st.error(" **Retention Directive:** This account has crossed standard volatility boundaries. Flag account and dispatch account management team to propose incentive lock-in configurations immediately.")
+                st.error("⚠️ **Retention Directive:** This account has crossed standard volatility boundaries. Flag account and dispatch account management team to propose incentive lock-in configurations immediately.")
             elif risk == "Medium":
-                st.warning(" **Preemptive Playbook:** Indicators point toward service friction. Schedule routine account wellness check-ins or look to cross-sell technical onboarding solutions.")
+                st.warning("⚡ **Preemptive Playbook:** Indicators point toward service friction. Schedule routine account wellness check-ins or look to cross-sell technical onboarding solutions.")
             else:
-                st.success(" **Expansion Track:** Account is structurally sound. Identify avenues for premium service tiered expansion or upsell tracks during standard lifecycles.")
+                st.success("💎 **Expansion Track:** Account is structurally sound. Identify avenues for premium service tiered expansion or upsell tracks during standard lifecycles.")
                 
         else:
             st.error("Core operational API running but request vector parsing completely failed.")
             
     except requests.exceptions.ConnectionError:
-        st.info(" **System Setup Required:** Please confirm your background Flask server engine (`backend.py`) is initialized and running live on port 5000.")
+        st.info("🔌 **System Setup Required:** Please confirm your background Flask server engine is initialized and running live.")
     
     st.markdown('</div>', unsafe_allow_html=True)
